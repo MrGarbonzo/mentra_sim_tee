@@ -13,7 +13,7 @@ const app = express();
 app.use(express.static(join(__dirname, 'dist')));
 
 // Serve index.html for all routes (SPA)
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
@@ -89,8 +89,8 @@ function generatePairingCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Create initial pairing code
-let currentPairingCode = generatePairingCode();
+// Create initial pairing code (use env var or generate random)
+let currentPairingCode = process.env.PAIRING_CODE || generatePairingCode();
 let currentModel = 'demo-all'; // Default model
 console.log(`🔑 Initial pairing code: ${currentPairingCode}`);
 
