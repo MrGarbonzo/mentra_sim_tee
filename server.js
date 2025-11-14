@@ -219,3 +219,28 @@ httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 WebSocket server running on http://0.0.0.0:${PORT}`);
   console.log(`🔑 Pairing code: ${currentPairingCode}`);
 });
+
+// Keep the process alive
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM, shutting down...');
+  httpServer.close(() => {
+    console.log('HTTP server closed');
+    io.close(() => {
+      console.log('Socket.IO server closed');
+      process.exit(0);
+    });
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT, shutting down...');
+  httpServer.close(() => {
+    console.log('HTTP server closed');
+    io.close(() => {
+      console.log('Socket.IO server closed');
+      process.exit(0);
+    });
+  });
+});
+
+console.log('Server is running. Press Ctrl+C to exit.');
