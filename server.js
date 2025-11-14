@@ -1,8 +1,22 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
+
+// Serve static files from dist directory
+app.use(express.static(join(__dirname, 'dist')));
+
+// Serve index.html for all routes (SPA)
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'index.html'));
+});
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
