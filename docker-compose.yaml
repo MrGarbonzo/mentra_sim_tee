@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  simulator:
+    image: ghcr.io/mrgarbonzo/mentra_sim_tee:latest
+
+    container_name: mentraos-simulator
+
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+
+    ports:
+      - "3001:3001"
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('net').connect(3001, 'localhost').on('connect', () => process.exit(0)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  default:
+    driver: bridge
